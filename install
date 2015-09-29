@@ -59,7 +59,7 @@ function _INIT(){
 #
 # Variables global
 NAME="ModBlackList"
-VERSION="1.0.0"
+VERSION="1.0.1"
 EXEC="modbl"
 DIR_BLACKLIST="/etc/modprobe.d"
 BLACKLIST_CONF="blacklist.conf"
@@ -76,6 +76,7 @@ None='\033[00m'         # Close
 # Begin Functions
 function _ADD_MODULE_BLACKLIST(){
 
+
 # Create header blacklist in "/etc/modprobe.d".
 if [[ ! -f "\$DIR_BLACKLIST/\$BLACKLIST_CONF" ]]; then
 
@@ -86,10 +87,36 @@ if [[ ! -f "\$DIR_BLACKLIST/\$BLACKLIST_CONF" ]]; then
 %EOF
 fi
 
-  # Insert blocked modules.
-  echo "blacklist \$1" >> \$DIR_BLACKLIST/\$BLACKLIST_CONF
-  printf "\n\${BYellow}Module (\$1)\${None} \${BGreen}added\${None} \${BYellow}to the blacklist.\${None}\n"
-  printf "See: \${BBlue}\$DIR_BLACKLIST/\$BLACKLIST_CONF\${None}\n\${BGreen}Done ✔\${None}\n\n"
+  SEARCH_MODULE="\$(grep -i -n -w "\$1" \$DIR_BLACKLIST/\$BLACKLIST_CONF | cut -d':' -f1)"
+  if [[ ! -z "\$SEARCH_MODULE" ]]; then
+
+    printf "\n\${BYellow}[ WARNING ] Already exists in this module blacklist.\${None}\n\n"
+
+  else
+
+    # Insert blocked modules.
+    echo "blacklist \$1" >> \$DIR_BLACKLIST/\$BLACKLIST_CONF
+    printf "\n\${BYellow}Module (\$1)\${None} \${BGreen}added\${None} \${BYellow}to the blacklist.\${None}\n\${BGreen}Done ✔\${None}\n\n"
+
+  fi
+
+}
+
+function _REMOVE_MODULE_BLACKLIST(){
+
+  SEARCH_MODULE="\$(grep -i -n -w "\$1" \$DIR_BLACKLIST/\$BLACKLIST_CONF | cut -d':' -f1)"
+
+  if [[ -z "\$SEARCH_MODULE" ]]; then
+
+    printf "\n\${BYellow}[ WARNING ] No module with this name to be removed.\${None}\n\n"
+
+  else
+
+  # Remove module of blacklist
+  sed -i \$SEARCH_MODULE"d" \$DIR_BLACKLIST/\$BLACKLIST_CONF
+  printf "\n\${BYellow}Module (\$1)\${None} \${BRed}removed\${None} \${BYellow}from the blacklist.\${None}\n\${BGreen}Done ✔\${None}\n\n"
+
+  fi
 
 }
 
@@ -113,7 +140,7 @@ function _UNINSTALL(){
     printf "\n\${BGreen}Complete uninstall ✔\${None}\n\n"
   else
 
-    printf "\nYou are uninstalling the \$NAME.\nWant to keep the blacklist?(y/n)\n\n"
+    printf "\nYou are uninstalling the \$NAME.\nWant to delete the blacklist modules?(y/n)\n\n"
     printf "Reply > "
     read resp_uninstall
 
@@ -121,13 +148,13 @@ function _UNINSTALL(){
     case "\$resp_uninstall" in
       y|Y)
         rm -f /usr/bin/\$EXEC
+        rm -f \$DIR_BLACKLIST/\$BLACKLIST_CONF
         printf "\n\${BGreen}Complete uninstall ✔\${None}\n\n"
-        printf "\n\${BYellow}[ WARNING ] The blacklist was maintained.\${None}\n\n"
       ;;
       n|N)
         rm -f /usr/bin/\$EXEC
-        rm -f \$DIR_BLACKLIST/\$BLACKLIST_CONF
         printf "\n\${BGreen}Complete uninstall ✔\${None}\n\n"
+        printf "\n\${BYellow}[ WARNING ] The blacklist was maintained.\${None}\n\n"
       ;;
     esac
 
@@ -135,13 +162,6 @@ function _UNINSTALL(){
 
 }
 
-function _REMOVE_MODULE_BLACKLIST(){
-
-  # Remove module of blacklist
-  sed -i "/\$1/d" \$DIR_BLACKLIST/\$BLACKLIST_CONF
-  printf "\n\${BYellow}Module (\$1)\${None} \${BRed}removed\${None} \${BYellow}from the blacklist.\${None}\n"
-  printf "See: \${BBlue}\$DIR_BLACKLIST/\$BLACKLIST_CONF\${None}\n\${BGreen}Done ✔\${None}\n\n"
-}
 # End Functions
 
 
@@ -188,6 +208,8 @@ EOF
   _CORRECTING
   _PERMISSIONS
 
+  printf "\n\e[1;32mInstallation completed ✔\033[00m\n"
+  printf "\nUsage: $MODBL_FILE { -a <module_name> | -r <module_name> | uninstall | help } \n\n"
   fi
 
 }
