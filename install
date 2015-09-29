@@ -1,0 +1,195 @@
+#!/bin/bash
+#
+#
+DIR_MODBL_EXEC="/usr/bin"
+MODBL_FILE="modbl"
+
+function _CORRECTING(){
+
+   # Enable EOF
+   sed -i "s/%EOF/EOF/g" $DIR_MODBL_EXEC/$MODBL_FILE
+
+}
+
+function _PERMISSIONS(){
+
+  # Permissions for script ModBlackList
+  chmod +x $DIR_MODBL_EXEC/$MODBL_FILE
+
+}
+
+function _INIT(){
+
+  if [[ "$(id -u)" != "0" ]]; then
+    printf "\n[x] You need to be root to use the ModBlackList (or sudo).\n\n"
+  else
+
+/bin/cat << EOF > $DIR_MODBL_EXEC/$MODBL_FILE
+#!/bin/bash
+# --------------------------------------------------------------------------------
+# Name: ModBlackList
+# Executable: modbl
+# Type: Shell
+# Description: ModBlackList is a simple script to create a list of blocked modules.
+# Credits: William C. Canin <http://williamcanin.com>
+# Province: Brazil/SP
+# License: The MIT License (MIT)
+
+# Copyright (c) 2015 William C. Canin <william.costa.canin@gmail.com>
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+# ******************************************************************************
+# --------------------------------------------------------------------------------
+#
+# Variables global
+NAME="ModBlackList"
+VERSION="1.0.0"
+EXEC="modbl"
+DIR_BLACKLIST="/etc/modprobe.d"
+BLACKLIST_CONF="blacklist.conf"
+# Colors
+BRed='\e[1;31m'         # Red
+BGreen='\e[1;32m'       # Green
+BYellow='\e[1;33m'      # Yellow
+BBlue='\e[1;34m'        # Blue
+None='\033[00m'         # Close
+
+
+
+
+# Begin Functions
+function _ADD_MODULE_BLACKLIST(){
+
+# Create header blacklist in "/etc/modprobe.d".
+if [[ ! -f "\$DIR_BLACKLIST/\$BLACKLIST_CONF" ]]; then
+
+/bin/cat << EOF > \$DIR_BLACKLIST/\$BLACKLIST_CONF
+#
+# List of blocked modules, created by \$NAME.
+#
+%EOF
+fi
+
+  # Insert blocked modules.
+  echo "blacklist \$1" >> \$DIR_BLACKLIST/\$BLACKLIST_CONF
+  printf "\n\${BYellow}Module (\$1)\${None} \${BGreen}added\${None} \${BYellow}to the blacklist.\${None}\n\${BGreen}Done ✔\${None}\n\n"
+
+}
+
+function _HELP(){
+
+  printf "\nUsage: \$0 { -a <module_name> | -r <module_name> | uninstall | help } \n"
+  printf "\n======================================================"
+  printf "\n Command                      Description\n"
+  printf "======================================================"
+  printf "\n\n-a (--add)            Add module in the blacklist\n"
+  printf "\n\n-r (--remove)         Remove module in the blacklist\n"
+  printf "\n\nuninstall             Uninstall \$NAME\n\n"
+  printf "\n\n\$NAME version \$VERSION (c) Copyright \$(date +%Y)\n\n"
+
+}
+
+function _UNINSTALL(){
+
+  if [[ ! -f "\$DIR_BLACKLIST/\$BLACKLIST_CONF" ]]; then
+    rm -f /usr/bin/\$EXEC
+    printf "\n\${BGreen}Complete uninstall ✔\${None}\n\n"
+  else
+
+    printf "\nYou are uninstalling the \$NAME.\nWant to keep the blacklist?(y/n)\n\n"
+    printf "Reply > "
+    read resp_uninstall
+
+
+    case "\$resp_uninstall" in
+      y|Y)
+        rm -f /usr/bin/\$EXEC
+        printf "\n\${BGreen}Complete uninstall ✔\${None}\n\n"
+        printf "\n\${BYellow}[ WARNING ] The blacklist was maintained.\${None}\n\n"
+      ;;
+      n|N)
+        rm -f /usr/bin/\$EXEC
+        rm -f \$DIR_BLACKLIST/\$BLACKLIST_CONF
+        printf "\n\${BGreen}Complete uninstall ✔\${None}\n\n"
+      ;;
+    esac
+
+  fi
+
+}
+
+function _REMOVE_MODULE_BLACKLIST(){
+
+  # Remove module of blacklist
+  sed -i "/\$1/d" \$DIR_BLACKLIST/\$BLACKLIST_CONF
+  printf "\n\${BYellow}Module (\$1)\${None} \${BRed}removed\${None} \${BYellow}from the blacklist.\${None}\n\${BGreen}Done ✔\${None}\n\n"
+
+}
+# End Functions
+
+
+
+
+# Main
+if [[ "\$(id -u)" != "0" ]]; then
+
+  printf "\n\${BRed}[x] You need to be root to use the \$NAME (or sudo).\${None}\n\n"
+
+else
+
+  case "\$1" in
+    -a|--add)
+      if [[ -z "\$2" ]]; then
+        bash \$0
+      else
+        _ADD_MODULE_BLACKLIST \$2
+      fi
+    ;;
+    -r|--remove)
+      if [[ -z "\$2" ]]; then
+        bash \$0
+      else
+        _REMOVE_MODULE_BLACKLIST \$2
+      fi
+    ;;
+    uninstall)
+      _UNINSTALL
+    ;;
+    help)
+      _HELP
+    ;;
+    *)
+    printf "\n\${BYellow}[ WARNING ] You must pass the module as a parameter to put on blacklist.\${None}\n"
+    printf "\nUsage: \$0 { -a <module_name> | -r <module_name> | uninstall | help } \n"
+    printf "\n\n\n\$NAME version \$VERSION (c) Copyright \$(date +%Y)\n\n"
+    ;;
+  esac
+
+fi
+EOF
+
+  _CORRECTING
+  _PERMISSIONS
+
+  fi
+
+}
+
+# Start install
+_INIT

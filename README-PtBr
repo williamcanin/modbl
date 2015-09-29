@@ -1,0 +1,48 @@
+Modbl
+
+[ SOBRE ]
+
+  "Modbl (ModBlackList)" é um código em Shell Script, que propoe para os
+  usuários, a adição de módulos em uma lista negra (blacklist) para que esses
+  módulos não sejam carregados na inicialização da máquina (boot).
+  Após adicionar módulos na lista negra (blacklist) com o
+  "Modbl", também é possível removê-los.
+
+
+[ INSTALAÇÃO ]
+
+  I - Faça o clone do "Modbl" e entre na pasta do mesmo:
+
+    $ git https://github.com/williamcanin/modbl.git
+    $ cd modbl
+
+  II - Execute o comando abaixo como root (superusuário):
+
+    # bash install
+
+
+[ USANDO ]
+
+  - Adicionando um módulo na lista negra:
+
+    # modbl -a <name_module>
+
+  - Removendo um módulo na lista negra:
+
+    # modbl -r <name_module>
+
+  Para saber quais são as opções que o "Modbl" disponibiliza,
+  simplismente use o comando # modbl help.
+
+
+[ LICENÇA ]
+
+  MIT License (MIT)
+  https://opensource.org/licenses/MIT
+
+
+------------------------------------------------------------------
+ © 2015 Modbl. William C. Canin. Todos os direitos reservados. ®
+------------------------------------------------------------------
+
+
