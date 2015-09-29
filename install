@@ -88,7 +88,8 @@ fi
 
   # Insert blocked modules.
   echo "blacklist \$1" >> \$DIR_BLACKLIST/\$BLACKLIST_CONF
-  printf "\n\${BYellow}Module (\$1)\${None} \${BGreen}added\${None} \${BYellow}to the blacklist.\${None}\n\${BGreen}Done ✔\${None}\n\n"
+  printf "\n\${BYellow}Module (\$1)\${None} \${BGreen}added\${None} \${BYellow}to the blacklist.\${None}\n"
+  printf "See: \${BBlue}\$DIR_BLACKLIST/\$BLACKLIST_CONF\${None}\n\${BGreen}Done ✔\${None}\n\n"
 
 }
 
@@ -138,8 +139,8 @@ function _REMOVE_MODULE_BLACKLIST(){
 
   # Remove module of blacklist
   sed -i "/\$1/d" \$DIR_BLACKLIST/\$BLACKLIST_CONF
-  printf "\n\${BYellow}Module (\$1)\${None} \${BRed}removed\${None} \${BYellow}from the blacklist.\${None}\n\${BGreen}Done ✔\${None}\n\n"
-
+  printf "\n\${BYellow}Module (\$1)\${None} \${BRed}removed\${None} \${BYellow}from the blacklist.\${None}\n"
+  printf "See: \${BBlue}\$DIR_BLACKLIST/\$BLACKLIST_CONF\${None}\n\${BGreen}Done ✔\${None}\n\n"
 }
 # End Functions
 
