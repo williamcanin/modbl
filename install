@@ -81,8 +81,9 @@ function _ADD_MODULE_BLACKLIST(){
 if [[ ! -f "\$DIR_BLACKLIST/\$BLACKLIST_CONF" ]]; then
 
 /bin/cat << EOF > \$DIR_BLACKLIST/\$BLACKLIST_CONF
-#
-# List of blocked modules, created by \$NAME.
+# ================================================== #
+# List of blocked modules. Created by \$NAME.        #
+# ================================================== #
 #
 %EOF
 fi
