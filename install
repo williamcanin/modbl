@@ -123,13 +123,13 @@ function _REMOVE_MODULE_BLACKLIST(){
 
 function _HELP(){
 
-  printf "\nUsage: \$0 { -a <module_name> | -r <module_name> | uninstall | help } \n"
   printf "\n======================================================"
-  printf "\n Command                      Description\n"
+  printf "\n Options                      Description\n"
   printf "======================================================"
   printf "\n\n-a (--add)            Add module in the blacklist\n"
   printf "\n\n-r (--remove)         Remove module in the blacklist\n"
   printf "\n\nuninstall             Uninstall \$NAME\n\n"
+  printf "\nUsage: \$0 { -a <module_name> | -r <module_name> | uninstall | help } \n\n"
   printf "\n\n\$NAME version \$VERSION (c) Copyright \$(date +%Y)\n\n"
 
 }

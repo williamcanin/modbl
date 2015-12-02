@@ -13,7 +13,7 @@ Modbl
 
   I - Faça o clone do "Modbl" e entre na pasta do mesmo:
 
-    $ git https://github.com/williamcanin/modbl.git
+    $ git clone https://github.com/williamcanin/modbl.git
     $ cd modbl
 
   II - Execute o comando abaixo como root (superusuário):
