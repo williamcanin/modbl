@@ -32,6 +32,7 @@ function _INIT(){
 # Type: Shell
 # Description: ModBlackList is a simple script to create a list of blocked modules.
 # Credits: William C. Canin <http://williamcanin.com>
+# Raw: http://git.io/modbl
 # Province: Brazil/SP
 # License: The MIT License (MIT)
 
